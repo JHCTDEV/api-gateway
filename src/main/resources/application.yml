@@ -1,0 +1,41 @@
+
+server:
+  port: 9090
+spring:
+  application:
+    name: api-gateway
+---
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: customer
+          uri: lb://CUSTOMER-SERVICE/
+          predicates:
+            - Path=/customer/**,/customerType/**
+        - id: product
+          uri: lb://PRODUCT-SERVICE/
+          predicates:
+            - Path=/product/**,/productType/**
+        - id: customerProduct
+          uri: lb://CUSTOMERPRODUCT-SERVICE/
+          predicates:
+            - Path=/customerProduct/**
+        - id: transaction
+          uri: lb://TRANSACTION-SERVICE/
+          predicates:
+            - Path=/transaction/**
+      discovery:
+        locator:
+          enabled: true
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:9093/eureka/
+  instance:
+    instance-id: ${spring.application.name}-${random.uuid}
+    prefer-ip-address: true
+    hostname: localhost
+ribbon:
+  eureka:
+    enabled: true
