@@ -24,7 +24,7 @@ spring:
         - id: transaction
           uri: lb://TRANSACTION-SERVICE/
           predicates:
-            - Path=/transaction/**
+            - Path=/transaction/**,/transactionType/**
       discovery:
         locator:
           enabled: true
