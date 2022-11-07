@@ -27,7 +27,7 @@ jobs:
       with:
         username: ${{ secrets.AzureAppService_ContainerUsername_3bb94318a1b847cfa8c5f41094dae78b }}
         password: ${{ secrets.AzureAppService_ContainerPassword_61ed07f80e304382b2bde0b3fb3a41d8 }}
-        repository: jhctdev/eureka-server
+        repository: jhctdev/api-gateway
         tags: ${{ github.sha }}
 
 
