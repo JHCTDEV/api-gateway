@@ -15,23 +15,21 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-
+    - uses: actions/setup-java@v1
+      with:
+        java-version: 17
+    - name: Build with Maven
+      run: mvn -DHOST_NAME=localhost -DPORT_SERVICE=8089 -DURI_EUREKA=http://localhost:9093/eureka/ -DURI_MONGODB=mongodb://localhost/transaction -DPORT_MONGODB=27017 -DURI_CONFIG_SERVER=http://root:123a@localhost:8099 clean install
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
-
-    - name: Log in to registry
-      uses: docker/login-action@v1
+    - name: Build and push container image to registry
+      uses: docker/build-push-action@v1
       with:
-        registry: https://index.docker.io/v1/
         username: ${{ secrets.AzureAppService_ContainerUsername_3bb94318a1b847cfa8c5f41094dae78b }}
         password: ${{ secrets.AzureAppService_ContainerPassword_61ed07f80e304382b2bde0b3fb3a41d8 }}
+        repository: jhctdev/eureka-server
+        tags: ${{ github.sha }}
 
-    - name: Build and push container image to registry
-      uses: docker/build-push-action@v2
-      with:
-        push: true
-        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_3bb94318a1b847cfa8c5f41094dae78b }}/jhctdev/api-gateway:${{ github.sha }}
-        file: ./Dockerfile
 
   deploy:
     runs-on: ubuntu-latest
@@ -48,4 +46,4 @@ jobs:
         app-name: 'apigatewaybootcamp'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_83d51093cc4d4e39bd7785249fbf17db }}
-        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_3bb94318a1b847cfa8c5f41094dae78b }}/jhctdev/api-gateway:${{ github.sha }}'
+        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_3bb94318a1b847cfa8c5f41094dae78b }}/api-gateway:${{ github.sha }}'
